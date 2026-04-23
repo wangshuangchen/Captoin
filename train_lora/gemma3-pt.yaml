@@ -1,0 +1,51 @@
+### model
+model_name_or_path: /root/autodl-tmp/gemma-3-12b-pt
+image_max_pixels: 4000000
+trust_remote_code: true
+# use_flash_attention_2: true
+
+
+### method
+stage: sft
+do_train: true
+finetuning_type: lora
+lora_rank: 4
+lora_target: q_proj
+# deepspeed: examples/deepspeed/ds_z3_config.json
+
+### dataset
+dataset: 12346-6000
+template: gemma3
+cutoff_len: 1024
+max_samples: 10000
+overwrite_cache: true
+preprocessing_num_workers: 1
+dataloader_num_workers: 1
+
+### output
+output_dir: saves/gemma-3-12b-pt-12346-6000/lora/sft
+logging_steps: 10
+save_steps: 500
+plot_loss: true
+overwrite_output_dir: true
+save_only_model: false
+report_to: none  # choices: [none, wandb, tensorboard, swanlab, mlflow]
+
+### train
+gradient_checkpointing: true
+per_device_train_batch_size: 1
+gradient_accumulation_steps: 4
+learning_rate: 1.0e-4
+num_train_epochs: 3.0
+lr_scheduler_type: cosine
+warmup_ratio: 0.1
+bf16: true
+ddp_timeout: 180000000
+resume_from_checkpoint: null
+
+### eval
+eval_dataset: eval-1000-five
+# val_size: 0.2
+per_device_eval_batch_size: 1
+eval_strategy: steps
+eval_steps: 50
